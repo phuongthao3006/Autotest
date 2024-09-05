@@ -4,6 +4,7 @@ import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
+import model.Person;
 import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.chrome.ChromeDriver;
@@ -13,11 +14,13 @@ import pages.MenuPage;
 import pages.TablePage;
 import utils.PropertyUtil;
 
+import java.util.List;
 import java.util.Properties;
 import java.util.Random;
 
 public class TableStep {
     WebDriver driver;
+    private String searchText;
     @Given("The user opens the page")
     public void the_user_opens_the_page(){
         BasePage page = new BasePage();
@@ -42,22 +45,35 @@ public class TableStep {
     public void the_user_sees_the_table_page(){
         MenuPage menuPage = new MenuPage(driver);
         boolean actualTitle = menuPage.isDisplayTable();
-
-        if (actualTitle) {
-            System.out.print("Test Passed!");
-        } else {
-            System.out.print("Test Failed!");
-        }
+        Assert.assertEquals(true, actualTitle);
     }
-    @When("The user searches \"java\"")
-    public void the_user_searches_text(){
+    @When("The user searches {string}")
+    public void the_user_searches_text(String searchText){
+        this.searchText = searchText;
         TablePage tablePage = new TablePage(driver);
-        tablePage.search("java");
+        tablePage.search(searchText);
     }
 
     @Then("The user sees correct result")
     public void the_user_sees_correct_result(){
         TablePage tablePage = new TablePage(driver);
+        List<Person> actualListPerson = tablePage.getListPersonInTable();
         Assert.assertEquals( 5,tablePage.getListPersonInTable().size());
+        boolean actual;
+        for (int i = 0; i < actualListPerson.size(); i++) {
+            String name = actualListPerson.get(i).getName().toLowerCase();
+            String position = actualListPerson.get(i).getPosition().toLowerCase();
+            String office = actualListPerson.get(i).getOffice().toLowerCase();
+            String age = String.valueOf(actualListPerson.get(i).getAge());
+            String startDate = String.valueOf(actualListPerson.get(i).getStartDate()).toLowerCase();
+            String salary = actualListPerson.get(i).getSalary().toLowerCase();
+            if(name.contains(searchText)||position.contains(searchText)|| office.contains(searchText)|| age.contains(searchText)
+                    || startDate.contains(searchText)|| salary.contains(searchText)){
+                actual = true;
+            }else {
+                actual = false;
+            }
+            Assert.assertEquals(true, actual);
+        }
     }
 }
