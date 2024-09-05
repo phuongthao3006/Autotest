@@ -27,6 +27,8 @@ public class MenuPage extends BasePage{
     WebElement tableMenu;
     @FindBy(xpath = "//h1[contains(text(),'Buttons')]")
     WebElement titleButton;
+    @FindBy(xpath = "//h1[contains(text(),'Tables')]")
+    WebElement titleTable;
 
     public  MenuPage(WebDriver driver){
         this.driver = driver;
@@ -59,6 +61,16 @@ public class MenuPage extends BasePage{
         try {
             WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
             wait.until(ExpectedConditions.visibilityOf(titleButton));
+            return true;
+        }catch (Exception ex){
+            return false;
+        }
+
+    }
+    public boolean isDisplayTable(){
+        try {
+            WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(10));
+            wait.until(ExpectedConditions.visibilityOf(titleTable));
             return true;
         }catch (Exception ex){
             return false;

@@ -16,7 +16,7 @@ public class BasePage {
     public WebDriver driver;
 
     @Before
-    public void setup(){
+    public WebDriver setup(){
         Properties properties = PropertyUtil.propertyLoader("src/test/resources/config/config.properties");
         String driveName = properties.getProperty("driver");
         switch (driveName){
@@ -29,6 +29,7 @@ public class BasePage {
         }
         driver.manage().window().maximize();
         driver.get(properties.getProperty("base.url"));
+        return driver;
      }
 
      @After
