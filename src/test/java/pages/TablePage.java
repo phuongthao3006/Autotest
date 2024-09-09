@@ -10,9 +10,7 @@ import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
 import java.time.Duration;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class TablePage extends BasePage{
     @FindBy(xpath = "//select[@name='dataTable_length']")
@@ -75,6 +73,26 @@ public class TablePage extends BasePage{
 
     public void search(String search){
         searchTable.sendKeys(search);
+    }
+
+    public List<Map<String, String>> getTableData() {
+        List<Map<String, String>> tableData = new ArrayList<>();
+        WebElement table = driver.findElement(By.id("dataTable"));
+        List<WebElement> row = table.findElements(By.tagName("tr"));
+        List<WebElement> headers = row.get(0).findElements(By.tagName("th"));
+        List<String> columnNames = new ArrayList<>();
+        for (WebElement header : headers) {
+            columnNames.add(header.getText());
+        }
+        for (int i = 1; i < row.size(); i++) {
+            List<WebElement> column = row.get(i).findElements(By.tagName("td"));
+            Map<String, String> rowData = new HashMap<>();
+            for (int j = 0; j < column.size(); j++) {
+                rowData.put(columnNames.get(j), column.get(j).getText());
+            }
+            tableData.add(rowData);
+        }
+        return tableData;
     }
 
 }

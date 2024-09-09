@@ -1,5 +1,6 @@
 package steps;
 
+import io.cucumber.datatable.DataTable;
 import io.cucumber.java.en.And;
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
@@ -7,15 +8,13 @@ import io.cucumber.java.en.When;
 import model.Person;
 import org.junit.Assert;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.chrome.ChromeDriver;
 import pages.BasePage;
 import pages.LoginPage;
 import pages.MenuPage;
 import pages.TablePage;
-import utils.PropertyUtil;
 
 import java.util.List;
-import java.util.Properties;
+import java.util.Map;
 import java.util.Random;
 
 public class TableStep {
@@ -25,7 +24,6 @@ public class TableStep {
     public void the_user_opens_the_page(){
         BasePage page = new BasePage();
         driver = page.setup();
-
     }
 
     @When("The user logins success")
@@ -76,4 +74,24 @@ public class TableStep {
             Assert.assertEquals(true, actual);
         }
     }
+    @Then("The user sees correct search results in the table")
+    public void the_user_sees_correct_search_results_in_the_table(DataTable expectedTable) {
+        TablePage tablePage = new TablePage(driver);
+        List<Map<String, String>> actualTableData = tablePage.getTableData();
+        List<Map<String, String>> expectedTableData = expectedTable.asMaps(String.class, String.class);
+        Assert.assertEquals(expectedTableData.size(), actualTableData.size());
+
+        for (int i = 0; i < expectedTableData.size(); i++) {
+            Map<String, String> expectedRow = expectedTableData.get(i);
+            Map<String, String> actualRow = actualTableData.get(i);
+
+            Assert.assertEquals(expectedRow.get("Name"), actualRow.get("Name"));
+            Assert.assertEquals(expectedRow.get("Position"), actualRow.get("Position"));
+            Assert.assertEquals(expectedRow.get("Office"), actualRow.get("Office"));
+            Assert.assertEquals(expectedRow.get("Age"), actualRow.get("Age"));
+            Assert.assertEquals(expectedRow.get("Salary"), actualRow.get("Salary"));
+        }
+    }
+
+
 }
