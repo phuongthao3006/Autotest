@@ -43,4 +43,8 @@ public class LoginPage extends  BasePage{
         return usernameField.getAttribute("validationMessage");
     }
 
+    public String getUsername() {
+        return usernameField.getAttribute("value");
+    }
+
 }
